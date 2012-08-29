@@ -20,8 +20,22 @@ public class RandomStockFileGenerator {
     
     int count=0;
     
+    String pathToFile = null;    
+    
+    public String getPathToFile()
+    {
+       return pathToFile;
+    }
+    
+    void generateFile(String output)
+    {
+        if (pathToFile != null)
+           this.generateFile(pathToFile, output);
+    }
     void generateFile(String input, String output)
     {
+        
+     pathToFile = input;
      File file = new File(input);
      File ofile = new File(output);
      
@@ -58,9 +72,15 @@ public class RandomStockFileGenerator {
 
 }
     
+void addOneSession(String output)
+{
+    if (pathToFile != null)
+        this.addOneSession(pathToFile, output);
+}
     
 void addOneSession(String input, String output)
 {
+     pathToFile = input;
      File file = new File(input);
      File ofile = new File(output);
      int cntr = 0;
@@ -125,5 +145,17 @@ void addOneSession(String input, String output)
 
         return result;
     }
+   
+   
+  public static String getFileNameWithoutExtension(String fileName) {
+  File file = new File(fileName);
+  
+      int index = file.getName().lastIndexOf('.');
+      if (index>0&& index <= file.getName().length() - 2 ) {
+       return file.getName().substring(0, index);
+      }  
+    return "";
+    }
+
     
-}
+  }

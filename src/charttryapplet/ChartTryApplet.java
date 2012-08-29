@@ -3,20 +3,16 @@ package charttryapplet;
 
 import java.applet.Applet;
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileFilter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /*
  * To change this template, choose Tools | Templates
@@ -45,11 +41,14 @@ public class ChartTryApplet extends javax.swing.JFrame {
         super(title);
         initComponents();
         h_menuItem = new MenuItemHandler(this);
-        generator.generateFile("./KGHM.mst", "./data/KGHM.txt");
-        Applet applet = this.loadClient();
-        this.mainPanel.setBorder(new EmptyBorder(10,10,10,10));
-        this.mainPanel.add(applet,BorderLayout.SOUTH);
-        this.addComponents();
+        if (generator.getPathToFile() != null)
+        {
+           String mainFileName = RandomStockFileGenerator.getFileNameWithoutExtension(generator.getPathToFile());
+           this.generator.generateFile("./data/"+mainFileName +".txt");
+           Applet applet = this.loadClient();
+           this.mainPanel.add(applet,BorderLayout.CENTER);
+        }
+        
     }
 
     /**
@@ -62,6 +61,12 @@ public class ChartTryApplet extends javax.swing.JFrame {
     private void initComponents() {
 
         mainPanel = new javax.swing.JPanel();
+        leftPanel = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        northPanel = new javax.swing.JPanel();
+        bt_randomize = new javax.swing.JButton();
+        bt_nextSession = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         newMenuItem = new javax.swing.JMenuItem();
@@ -71,8 +76,84 @@ public class ChartTryApplet extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
+        mainPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 5));
         mainPanel.setLayout(new java.awt.BorderLayout());
+        getContentPane().add(mainPanel, java.awt.BorderLayout.CENTER);
+
+        leftPanel.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 3, true));
+        leftPanel.setToolTipText("");
+
+        jLabel1.setText("ROI");
+
+        jLabel2.setMaximumSize(new java.awt.Dimension(15, 14));
+        jLabel2.setMinimumSize(new java.awt.Dimension(15, 14));
+        jLabel2.setPreferredSize(new java.awt.Dimension(15, 14));
+
+        javax.swing.GroupLayout leftPanelLayout = new javax.swing.GroupLayout(leftPanel);
+        leftPanel.setLayout(leftPanelLayout);
+        leftPanelLayout.setHorizontalGroup(
+            leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(leftPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        leftPanelLayout.setVerticalGroup(
+            leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(leftPanelLayout.createSequentialGroup()
+                .addGap(39, 39, 39)
+                .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE))
+                .addGap(410, 410, 410))
+        );
+
+        getContentPane().add(leftPanel, java.awt.BorderLayout.LINE_START);
+
+        northPanel.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 5, true));
+        northPanel.setMinimumSize(new java.awt.Dimension(823, 80));
+        northPanel.setPreferredSize(new java.awt.Dimension(823, 80));
+
+        bt_randomize.setText("Randomize");
+        bt_randomize.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt_randomizeActionPerformed(evt);
+            }
+        });
+
+        bt_nextSession.setText("Next session");
+        bt_nextSession.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt_nextSessionActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout northPanelLayout = new javax.swing.GroupLayout(northPanel);
+        northPanel.setLayout(northPanelLayout);
+        northPanelLayout.setHorizontalGroup(
+            northPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(northPanelLayout.createSequentialGroup()
+                .addGap(35, 35, 35)
+                .addComponent(bt_randomize)
+                .addGap(55, 55, 55)
+                .addComponent(bt_nextSession)
+                .addContainerGap(629, Short.MAX_VALUE))
+        );
+        northPanelLayout.setVerticalGroup(
+            northPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(northPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(northPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(bt_randomize)
+                    .addComponent(bt_nextSession))
+                .addContainerGap(36, Short.MAX_VALUE))
+        );
+
+        getContentPane().add(northPanel, java.awt.BorderLayout.PAGE_START);
 
         jMenu1.setText("File");
 
@@ -108,23 +189,6 @@ public class ChartTryApplet extends javax.swing.JFrame {
 
         setJMenuBar(jMenuBar1);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(86, 86, 86)
-                .addComponent(mainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(737, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(512, Short.MAX_VALUE)
-                .addComponent(mainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(99, 99, 99))
-        );
-
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -137,8 +201,48 @@ public class ChartTryApplet extends javax.swing.JFrame {
     }//GEN-LAST:event_newMenuItemActionPerformed
 
     private void openMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMenuItemActionPerformed
-         h_menuItem.handleOpen();
+        JFileChooser fileChoose = new JFileChooser();
+        FileNameExtensionFilter filter1 = new FileNameExtensionFilter("Metastock (*.mst)", new String[] { "mst" });
+         
+        fileChoose.setFileFilter(filter1);
+        fileChoose.removeChoosableFileFilter(fileChoose.getAcceptAllFileFilter());
+
+       if ( JFileChooser.APPROVE_OPTION == fileChoose.showOpenDialog(this) )
+       {
+           File file = fileChoose.getSelectedFile();
+           String pathTofile = file.getAbsolutePath();
+           String mainFileName = RandomStockFileGenerator.getFileNameWithoutExtension(pathTofile);
+           this.generator.generateFile(pathTofile, "./data/"+mainFileName +".txt");
+           if (this.client != null)
+              this.mainPanel.remove(this.client); 
+           Applet applet = this.loadClient();
+           this.mainPanel.add( applet,BorderLayout.SOUTH);
+           this.revalidate();
+           this.repaint();
+       }
+       // h_menuItem.handleOpen();
     }//GEN-LAST:event_openMenuItemActionPerformed
+
+    private void bt_randomizeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_randomizeActionPerformed
+         if (generator.getPathToFile() != null) {
+            String mainFileName = RandomStockFileGenerator.getFileNameWithoutExtension(generator.getPathToFile());
+            this.generator.generateFile("./data/"+mainFileName +".txt");
+            this.mainPanel.remove(this.client);
+            Applet applet = this.loadClient();
+            this.mainPanel.add(applet, BorderLayout.SOUTH);
+            this.revalidate();
+            this.repaint();
+        }
+    }//GEN-LAST:event_bt_randomizeActionPerformed
+
+    private void bt_nextSessionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_nextSessionActionPerformed
+            this.generator.addOneSession("./data/"+RandomStockFileGenerator.getFileNameWithoutExtension(generator.getPathToFile())+".txt");
+             this.mainPanel.remove(this.client); 
+             Applet applet = this.loadClient();
+             this.mainPanel.add( applet,BorderLayout.SOUTH);
+             this.revalidate();
+             this.repaint();
+    }//GEN-LAST:event_bt_nextSessionActionPerformed
 
     /**
      * @param args the command line arguments
@@ -186,8 +290,9 @@ public class ChartTryApplet extends javax.swing.JFrame {
                            client = (Applet) jc.loadClass("FnChartsApplet").newInstance();
                            
                            FnChartsAppletStub stub = new FnChartsAppletStub(client);
+                           stub.setSymbol(RandomStockFileGenerator.getFileNameWithoutExtension(generator.getPathToFile()));
                            client.setStub(stub);
-                           client.setPreferredSize(new Dimension(700,500));
+                           client.setPreferredSize(new Dimension(700,700));
                            client.init();
                            
 
@@ -207,48 +312,28 @@ public class ChartTryApplet extends javax.swing.JFrame {
          }
     
      
-     private void addComponents()
-     {
-     
-         JPanel northPanel = new JPanel(new FlowLayout());
-         JButton bt_randomize = new JButton("Randomize");
-         ButtonActionListener actListener = new ButtonActionListener(this);
-         
-         
-         bt_randomize.addActionListener(actListener);
-         
-         JButton bt_nextSession = new JButton("Next Session");
-         bt_nextSession.addActionListener(actListener);
-         northPanel.add(bt_randomize);
-         northPanel.add(bt_nextSession);
-          JPanel westPanel = new JPanel(new GridLayout(2,5,5,5));
-          
-          JLabel l_roi = new JLabel("ROI:");
-          JLabel l_roiValue = new JLabel("0%");
-          
-          westPanel.add(l_roi);
-          westPanel.add(l_roiValue);
-          this.mainPanel.add(northPanel,BorderLayout.NORTH);   
-          this.mainPanel.add(westPanel,BorderLayout.WEST);
-       
-     
-     }
-    
+      
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton bt_nextSession;
+    public javax.swing.JButton bt_randomize;
     private javax.swing.JMenuItem exitMenuItem;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
+    public javax.swing.JPanel leftPanel;
     public javax.swing.JPanel mainPanel;
     private javax.swing.JMenuItem newMenuItem;
+    public javax.swing.JPanel northPanel;
     private javax.swing.JMenuItem openMenuItem;
     // End of variables declaration//GEN-END:variables
 }
 
 
 
-class ButtonActionListener implements ActionListener
+/*class ButtonActionListener implements ActionListener
 {
     private ChartTryApplet _applet = null;
 
@@ -286,4 +371,4 @@ class ButtonActionListener implements ActionListener
             _applet.repaint();
         }
     }
-}
+}*/

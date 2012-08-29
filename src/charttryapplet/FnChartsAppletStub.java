@@ -17,11 +17,15 @@ import java.net.URL;
 public class FnChartsAppletStub implements AppletStub {
 
     private Applet _applet;
+    private String symbol = null;
     public FnChartsAppletStub(Applet applet)
     {
        this._applet = applet;
     }
-    
+    public void setSymbol(String symbol)
+    {
+       this.symbol = new String(symbol);
+    }
     
     @Override
     public boolean isActive() {
@@ -51,7 +55,7 @@ public class FnChartsAppletStub implements AppletStub {
         else if ( "DataSource".equalsIgnoreCase(name) )
             return new String("data/{symbol}.txt");
         else if ("Symbol".equalsIgnoreCase(name))
-            return new String("KGHM");
+            return new String(symbol);
         else if ("AutoRefreshTime".equalsIgnoreCase(name))
             return new String("1");
         else
