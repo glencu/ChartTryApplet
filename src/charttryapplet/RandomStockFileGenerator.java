@@ -18,14 +18,16 @@ import java.util.Random;
  */
 public class RandomStockFileGenerator {
     
-    static void generateFile(String input, String output)
+    int count=0;
+    
+    void generateFile(String input, String output)
     {
      File file = new File(input);
      File ofile = new File(output);
      
      int numberOfLines = evaluateNumberOFLines(file);
      Random generator = new Random();
-     int count = generator.nextInt(numberOfLines);
+     count = generator.nextInt(numberOfLines);
      
       int cntr = 0;
         try {
@@ -33,16 +35,14 @@ public class RandomStockFileGenerator {
             //FileReader always assumes default encoding is OK!
             BufferedReader readerStream = new BufferedReader(new FileReader(file));
             BufferedWriter writerStream = new BufferedWriter(new FileWriter(ofile));
-            try {
+            try 
+            {
                 String line = null;
-                while ((line = readerStream.readLine()) != null) {
-                    
+                while ((line = readerStream.readLine()) != null) 
+                {
                     cntr++;            
                     if (cntr >= count) break;
                     writerStream.write(line+"\r\n");
-        
-                    
-
                 }
             }
             finally
@@ -56,10 +56,45 @@ public class RandomStockFileGenerator {
           e.printStackTrace();   
         }
 
-        
-        
+}
     
-    }
+    
+void addOneSession(String input, String output)
+{
+     File file = new File(input);
+     File ofile = new File(output);
+     int cntr = 0;
+     try {
+            //use buffering, reading one line at a time
+            //FileReader always assumes default encoding is OK!
+            BufferedReader readerStream = new BufferedReader(new FileReader(file));
+            BufferedWriter writerStream = new BufferedWriter(new FileWriter(ofile));
+            try 
+            {
+                String line = null;
+                while ((line = readerStream.readLine()) != null) 
+                {
+                    cntr++;            
+                    if (cntr >= count+1) 
+                    {
+                        this.count++;
+                        break;
+                    }
+                    writerStream.write(line+"\r\n");
+                }
+            }
+            finally
+            {
+              readerStream.close();
+              writerStream.close();
+            }
+        }
+        catch(IOException e)
+        {
+          e.printStackTrace();   
+        }
+    
+}
     
    static int evaluateNumberOFLines(File file)
     {

@@ -1,13 +1,22 @@
 package charttryapplet;
 
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.Loader;
+
 import java.applet.Applet;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 
 /*
  * To change this template, choose Tools | Templates
@@ -21,14 +30,26 @@ import java.util.logging.Logger;
 public class ChartTryApplet extends javax.swing.JFrame {
     
     
-    private Applet client = null;
+   // public Applet client = null;
+    private MenuItemHandler h_menuItem;
+    public Applet client = null;
+    RandomStockFileGenerator generator = new RandomStockFileGenerator();
+   // private ChartTryApplet frame = null;
 
 
     /**
      * Creates new form ChartTryApplet
      */
-    public ChartTryApplet() {
+    public ChartTryApplet(String title)
+    {
+        super(title);
         initComponents();
+        h_menuItem = new MenuItemHandler(this);
+        generator.generateFile("./KGHM.mst", "./data/KGHM.txt");
+        Applet applet = this.loadClient();
+        this.mainPanel.setBorder(new EmptyBorder(10,10,10,10));
+        this.mainPanel.add(applet,BorderLayout.SOUTH);
+        this.addComponents();
     }
 
     /**
@@ -40,21 +61,84 @@ public class ChartTryApplet extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        mainPanel = new javax.swing.JPanel();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        newMenuItem = new javax.swing.JMenuItem();
+        openMenuItem = new javax.swing.JMenuItem();
+        jSeparator1 = new javax.swing.JPopupMenu.Separator();
+        exitMenuItem = new javax.swing.JMenuItem();
+        jMenu2 = new javax.swing.JMenu();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        mainPanel.setLayout(new java.awt.BorderLayout());
+
+        jMenu1.setText("File");
+
+        newMenuItem.setText("New");
+        newMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newMenuItemActionPerformed(evt);
+            }
+        });
+        jMenu1.add(newMenuItem);
+
+        openMenuItem.setText("Open");
+        openMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openMenuItemActionPerformed(evt);
+            }
+        });
+        jMenu1.add(openMenuItem);
+        jMenu1.add(jSeparator1);
+
+        exitMenuItem.setText("Exit");
+        exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exitMenuItemActionPerformed(evt);
+            }
+        });
+        jMenu1.add(exitMenuItem);
+
+        jMenuBar1.add(jMenu1);
+
+        jMenu2.setText("Edit");
+        jMenuBar1.add(jMenu2);
+
+        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(86, 86, 86)
+                .addComponent(mainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(737, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(512, Short.MAX_VALUE)
+                .addComponent(mainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(99, 99, 99))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
+        h_menuItem.handleExit();
+    }//GEN-LAST:event_exitMenuItemActionPerformed
+
+    private void newMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newMenuItemActionPerformed
+         h_menuItem.handleNew();
+    }//GEN-LAST:event_newMenuItemActionPerformed
+
+    private void openMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMenuItemActionPerformed
+         h_menuItem.handleOpen();
+    }//GEN-LAST:event_openMenuItemActionPerformed
 
     /**
      * @param args the command line arguments
@@ -87,40 +171,119 @@ public class ChartTryApplet extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 
-                ChartTryApplet frame = new ChartTryApplet();
-                RandomStockFileGenerator.generateFile("./KGHM.mst", "./data/KGHM.txt");
-                Applet applet = frame.loadClient();
-                frame.setContentPane(applet);
+                ChartTryApplet frame = new ChartTryApplet("Technical Analysis Coach");
                 frame.setVisible(true);
             }
         });
     }
     
      public Applet loadClient() {
+       
                   try {
                            URLClassLoader jc = null;
                            File f = new File("fncharts.jar");
                            jc = new URLClassLoader(new URL[]{f.toURL()});
                            client = (Applet) jc.loadClass("FnChartsApplet").newInstance();
                            
-                           FnChartsAppletStub stub = new FnChartsAppletStub();
+                           FnChartsAppletStub stub = new FnChartsAppletStub(client);
                            client.setStub(stub);
+                           client.setPreferredSize(new Dimension(700,500));
                            client.init();
+                           
 
                            client.start();
+                           
+                           
                   } catch (InstantiationException ex) {
-                           Logger.getLogger(Loader.class.getName()).log(Level.SEVERE, null, ex);
+                           //Logger.getLogger(Loader.class.getName()).log(Level.SEVERE, null, ex);
                   } catch (IllegalAccessException ex) {
-                           Logger.getLogger(Loader.class.getName()).log(Level.SEVERE, null, ex);
+                          // Logger.getLogger(Loader.class.getName()).log(Level.SEVERE, null, ex);
                   } catch (ClassNotFoundException ex) {
-                           Logger.getLogger(Loader.class.getName()).log(Level.SEVERE, null, ex);
+                          // Logger.getLogger(Loader.class.getName()).log(Level.SEVERE, null, ex);
                   } catch (MalformedURLException ex) {
-                           Logger.getLogger(Loader.class.getName()).log(Level.SEVERE, null, ex);
+                          // Logger.getLogger(Loader.class.getName()).log(Level.SEVERE, null, ex);
                   }
                   return client;
          }
     
+     
+     private void addComponents()
+     {
+     
+         JPanel northPanel = new JPanel(new FlowLayout());
+         JButton bt_randomize = new JButton("Randomize");
+         ButtonActionListener actListener = new ButtonActionListener(this);
+         
+         
+         bt_randomize.addActionListener(actListener);
+         
+         JButton bt_nextSession = new JButton("Next Session");
+         bt_nextSession.addActionListener(actListener);
+         northPanel.add(bt_randomize);
+         northPanel.add(bt_nextSession);
+          JPanel westPanel = new JPanel(new GridLayout(2,5,5,5));
+          
+          JLabel l_roi = new JLabel("ROI:");
+          JLabel l_roiValue = new JLabel("0%");
+          
+          westPanel.add(l_roi);
+          westPanel.add(l_roiValue);
+          this.mainPanel.add(northPanel,BorderLayout.NORTH);   
+          this.mainPanel.add(westPanel,BorderLayout.WEST);
+       
+     
+     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem exitMenuItem;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JPopupMenu.Separator jSeparator1;
+    public javax.swing.JPanel mainPanel;
+    private javax.swing.JMenuItem newMenuItem;
+    private javax.swing.JMenuItem openMenuItem;
     // End of variables declaration//GEN-END:variables
+}
+
+
+
+class ButtonActionListener implements ActionListener
+{
+    private ChartTryApplet _applet = null;
+
+    public ButtonActionListener(ChartTryApplet applet) 
+    {
+        this._applet = applet;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) 
+    {
+        String action = e.getActionCommand();
+        if ("Randomize".equalsIgnoreCase(action)) 
+        {
+            _applet.generator.generateFile("./KGHM.mst", "./data/KGHM.txt");
+            _applet.mainPanel.remove(_applet.client); 
+             Applet applet = _applet.loadClient();
+            _applet.mainPanel.add( applet,BorderLayout.SOUTH);
+            _applet.revalidate();
+            _applet.repaint();
+            
+        }
+        else if ("Next Session".equalsIgnoreCase(action))
+        {
+             _applet.generator.addOneSession("./KGHM.mst", "./data/KGHM.txt");
+             //_applet.mainPanel.remove(_applet.client); 
+             //Applet applet = _applet.loadClient();
+            //_applet.mainPanel.add( applet,BorderLayout.SOUTH);
+            _applet.client.stop();
+            _applet.client.init();
+            _applet.client.start();
+            _applet.client.revalidate();
+            
+            _applet.revalidate();
+            _applet.repaint();
+        }
+    }
 }

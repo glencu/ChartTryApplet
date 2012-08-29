@@ -4,6 +4,7 @@
  */
 package charttryapplet;
 
+import java.applet.Applet;
 import java.applet.AppletContext;
 import java.applet.AppletStub;
 import java.net.MalformedURLException;
@@ -15,6 +16,13 @@ import java.net.URL;
  */
 public class FnChartsAppletStub implements AppletStub {
 
+    private Applet _applet;
+    public FnChartsAppletStub(Applet applet)
+    {
+       this._applet = applet;
+    }
+    
+    
     @Override
     public boolean isActive() {
         return true;
@@ -44,6 +52,8 @@ public class FnChartsAppletStub implements AppletStub {
             return new String("data/{symbol}.txt");
         else if ("Symbol".equalsIgnoreCase(name))
             return new String("KGHM");
+        else if ("AutoRefreshTime".equalsIgnoreCase(name))
+            return new String("1");
         else
             return null;
     }
@@ -55,7 +65,7 @@ public class FnChartsAppletStub implements AppletStub {
 
     @Override
     public void appletResize(int width, int height) {
-        throw new UnsupportedOperationException("Not supported yet.");
+         this._applet.resize(width,height);
     }
     
 }
